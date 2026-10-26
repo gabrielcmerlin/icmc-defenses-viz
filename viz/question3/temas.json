@@ -1,0 +1,202 @@
+{
+  "PPG-CCMC": {
+    "fonte": "https://www.icmc.usp.br/pos-graduacao/ppgccmc",
+    "macro_temas": [
+      {
+        "nome": "Computação Aplicada à Educação"
+      },
+      {
+        "nome": "Gráficos, Imagens, Visualização e Análise de Dados",
+        "sub_temas": [
+          {
+            "nome": "Engenharia, Mineração, e Ciência de Dados em Larga Escala"
+          },
+          {
+            "nome": "Banco de Dados/Computação Gráfica, Imagens e Visualização"
+          }
+        ]
+      },
+      {
+        "nome": "Engenharia de Software e Sistemas de Informação/Sistemas Web e Multimídia Interativos",
+        "sub_temas": [
+          {
+            "nome": "Engenharia de Software e Sistemas de Informação"
+          },
+          {
+            "nome": "Sistemas Web e Multimidia Interativos"
+          }
+        ]
+      },
+      {
+        "nome": "Inteligência Computacional",
+        "sub_temas": [
+          {
+            "nome": "Inteligência Artificial",
+            "sub_temas": [
+              {
+                "nome": "Aprendizado de Máquina e Mineração de Dados"
+              },
+              {
+                "nome": "Computação Bioinspirada"
+              },
+              {
+                "nome": "Processamento de Linguagem Natural"
+              },
+              {
+                "nome": "Robótica"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "nome": "Sistemas Distribuídos e Programação Concorrente/Sistemas Embarcados, Evoluídos e Robóticos/Redes Inteligentes",
+        "sub_temas": [
+          {
+            "nome": "Sistemas Distribuídos e Programação Concorrente"
+          },
+          {
+            "nome": "Sistemas Embarcados e Evolutivos"
+          },
+          {
+            "nome": "Robótica Móvel"
+          },
+          {
+            "nome": "Redes Inteligentes"
+          }
+        ]
+      },
+      {
+        "nome": "Mecânica dos Fluidos Computacional/Otimização/Modelos Estocásticos",
+        "sub_temas": [
+          {
+            "nome": "Mecânica dos Fluidos Computacional"
+          },
+          {
+            "nome": "Otimização",
+            "sub_temas": [
+              {
+                "nome": "Otimização - Modelos e Métodos para Programação Linear Inteira"
+              },
+              {
+                "nome": "Otimização em Problemas Inversos"
+              },
+              {
+                "nome": "Otimização em Sistemas Dinâmicos"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "nome": "Sistemas Complexos, de Partículas e Teoria de Controle"
+      }
+    ]
+  },
+  "PPG-Mat": {
+    "fonte": "https://www.icmc.usp.br/pos-graduacao/ppgmat",
+    "macro_temas": [
+      {
+        "nome": "Álgebra",
+        "sub_temas": [
+          {
+            "nome": "Álgebra Comutativa"
+          },
+          {
+            "nome": "Álgebra Homológica"
+          },
+          {
+            "nome": "Geometria Algébrica"
+          },
+          {
+            "nome": "Teoria dos Números"
+          }
+        ]
+      },
+      {
+        "nome": "Análise",
+        "sub_temas": [
+          {
+            "nome": "Análise Harmônica"
+          },
+          {
+            "nome": "Análise Funcional Aplicada"
+          },
+          {
+            "nome": "Análise Funcional Não Linear"
+          },
+          {
+            "nome": "Equações Diferenciais Ordinárias"
+          },
+          {
+            "nome": "Equações Diferenciais Funcionais"
+          },
+          {
+            "nome": "Equações Diferenciais Ordinárias Generalizadas e Integração Não Absoluta"
+          },
+          {
+            "nome": "Equações Diferenciais Parciais"
+          },
+          {
+            "nome": "Física Matemática"
+          },
+          {
+            "nome": "Sistemas Dinâmicos Impulsivos"
+          },
+          {
+            "nome": "Sistemas Dinâmicos Não Lineares"
+          }
+        ]
+      },
+      {
+        "nome": "Geometria e Topologia",
+        "sub_temas": [
+          {
+            "nome": "Geometria Diferencial"
+          },
+          {
+            "nome": "Física Matemática"
+          },
+          {
+            "nome": "Singularidades"
+          },
+          {
+            "nome": "Sistemas Dinâmicos"
+          },
+          {
+            "nome": "Teoria Ergódica"
+          },
+          {
+            "nome": "Topologia"
+          },
+          {
+            "nome": "Topologia Algébrica"
+          },
+          {
+            "nome": "Topologia Diferencial"
+          },
+          {
+            "nome": "Topologia Geométrica"
+          }
+        ]
+      }
+    ]
+  },
+  "PIPGES": {
+    "fonte": "https://www.icmc.usp.br/pos-graduacao/pipges",
+    "macro_temas": [
+      {
+        "nome": "Probabilidade e Processos Estocásticos"
+      },
+      {
+        "nome": "Inferência Estatística"
+      },
+      {
+        "nome": "Modelos de Regressão"
+      },
+      {
+        "nome": "Aprendizado de Máquina"
+      }
+    ]
+  }
+}
