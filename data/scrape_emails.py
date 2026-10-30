@@ -33,11 +33,11 @@ MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho",
          "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]
 
 # ex: "Defesa de Mestrado em Matemática"
-CABECALHO = re.compile(r"(Defesa|Qualifica[cç][aã]o)\s+de\s+(Mestrado|Doutorado)\s+em\s+(.+)$", re.I)
+CABECALHO = re.compile(r"(Defesa|Qualifica[cç][aã]o)\s+(?:de\s+)?(Mestrado|Doutorado)\s+em\s+(.+)$", re.I)
 
 # ex: "segunda-feira, 19 de outubro às 09 horas" / "15h30" / "09h45"
 QUANDO = re.compile(r"(\d{1,2})\s+de\s+(\w+)(?:\s+de\s+(\d{4}))?"
-                    r"(?:\s+às\s+(\d{1,2})(?:\s*h\s*(\d{2})?|:(\d{2})|\s+horas?)?)?", re.I)
+                    r"(?:[,\s]+às\s+(\d{1,2})(?:\s*h\s*(\d{2})?|:(\d{2})|\s+horas?)?)?", re.I)
 
 
 class HtmlParaTexto(HTMLParser):
@@ -106,7 +106,7 @@ def ler_data_hora(texto, data_email):
 def ler_bloco(bloco, data_email):
     """Transforma o texto de uma banca num dicionario. Devolve None se nao for uma banca."""
     # tem e-mail com o titulo colado no "Aluno(a):", separo em linhas
-    bloco = re.sub(r"(?<=\S)(?=(?:Aluno\(a\)|Orientador\(a\)|Quando|Onde):)", "\n", bloco)
+    bloco = re.sub(r"\b(Aluno|Orientador)\s*:", r"\1(a):", bloco)
     # alguns e-mails vem com negrito em texto puro: *Qualificação* de *Mestrado*
     linhas = [l.replace("*", "").strip() for l in bloco.splitlines()]
     linhas = [l for l in linhas if l]
@@ -131,7 +131,7 @@ def ler_bloco(bloco, data_email):
             falta = nome[len(programa):].strip()
             if resto[0].startswith(falta):
                 programa = nome
-                resto[0] = resto[0][len(falta):].strip()
+                resto[0] = resto[0][len(falta):].lstrip(". ").strip()
                 break
     # as vezes a sigla cai na linha de baixo ("Computacional -" / "PPG-CCMC")
     if resto:
@@ -157,7 +157,7 @@ def ler_bloco(bloco, data_email):
         elif ultimo:
             campos[ultimo] += " " + l
     if titulo:
-        titulo[0] = re.sub(r"^T[íi]tulo:\s*", "", titulo[0])
+        titulo[0] = re.sub(r"^T[íi]tulo(?: do Trabalho)?:\s*", "", titulo[0])
     if "Aluno(a)" not in campos or "Quando" not in campos:
         return None
 
@@ -281,7 +281,7 @@ def main():
     if len(sys.argv) < 2:
         sys.exit("uso: python3 data/scrape_emails.py data/raw/grad-I.mbox [saida.csv]")
     caminho_mbox = sys.argv[1]
-    saida = sys.argv[2] if len(sys.argv) > 2 else Path(__file__).parent / "eventos.csv"
+    saida = sys.argv[2] if len(sys.argv) > 2 else Path(__file__).parent / "eventos_3.csv"
 
     todos = []
     alteracoes = []
