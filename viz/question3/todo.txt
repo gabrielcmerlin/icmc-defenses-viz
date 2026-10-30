@@ -1,5 +1,0 @@
-1) script pra temas
-2) arrumar repo
-    - ajuste fino nos gráficos
-    - codigos
-    - revisao IA
