@@ -19,9 +19,9 @@ import requests
 
 AQUI = Path(__file__).parent
 RAIZ = AQUI.parent.parent
-EVENTOS = RAIZ / "data" / "eventos.csv"
+EVENTOS = RAIZ / "data" / "eventos_3.csv"
 TEMAS = AQUI / "temas_existentes.json"
-SAIDA = AQUI / "temas_llm.csv"
+SAIDA = AQUI / "temas_llm_novo.csv"
 
 OLLAMA = "http://localhost:11434"
 MODELO_PADRAO = "gemma4:12b"
