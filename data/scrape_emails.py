@@ -1,7 +1,7 @@
 # Le o .mbox que o Takeout gerou e monta o eventos.csv
 # (um evento por linha: defesas e qualificacoes da lista [grad-l] do ICMC)
 #
-# uso: python3 data/scrape_emails.py data/raw/grad-I.mbox
+# uso: python3 data/scrape_emails.py data/raw/defesas.mbox
 
 import csv
 import email
@@ -279,9 +279,9 @@ def separar_icmc(linhas):
 
 def main():
     if len(sys.argv) < 2:
-        sys.exit("uso: python3 data/scrape_emails.py data/raw/grad-I.mbox [saida.csv]")
+        sys.exit("uso: python3 data/scrape_emails.py data/raw/defesas.mbox [saida.csv]")
     caminho_mbox = sys.argv[1]
-    saida = sys.argv[2] if len(sys.argv) > 2 else Path(__file__).parent / "eventos_3.csv"
+    saida = sys.argv[2] if len(sys.argv) > 2 else Path(__file__).parent / "eventos.csv"
 
     todos = []
     alteracoes = []
