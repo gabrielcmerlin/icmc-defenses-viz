@@ -19,7 +19,7 @@ import requests
 
 AQUI = Path(__file__).parent
 RAIZ = AQUI.parent.parent
-EVENTOS = RAIZ / "data" / "eventos_3.csv"
+EVENTOS = RAIZ / "data" / "eventos.csv"
 TEMAS = AQUI / "temas_existentes.json"
 SAIDA = AQUI / "temas_llm_novo.csv"
 
