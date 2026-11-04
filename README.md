@@ -1,170 +1,187 @@
-# Trabalho 2 - Visualização Computacional
+# Visualização das bancas de defesa e qualificação do ICMC-USP
 
-Dados: agenda semanal de defesas e qualificações do ICMC, que chega por e-mail na lista `[grad-l]`.
-Aqui está o passo a passo de como eu peguei esses e-mails e transformei num CSV.
+## Descrição
 
-## 1. Baixar os e-mails do Gmail
+As bancas de qualificação e de defesa do ICMC-USP são divulgadas por e-mail, em avisos semanais de texto livre que informam aluno, orientador, título, data e local. Cada aviso mostra o que acontece naquela semana, mas ninguém enxerga o conjunto. Este projeto transforma esses avisos em um conjunto de dados estruturado com 1150 bancas de cinco programas de pós-graduação (PPG-CCMC, PIPGES, PPG-Mat, MECAI e PROFMAT), realizadas entre março de 2022 e outubro de 2026, e o explora com visualizações interativas em torno de três questões: quando as bancas acontecem (gráfico sazonal de linhas), que perfis de banca existem e quais são raros (treemap hierárquico) e se os orientadores são especialistas ou generalistas (gráfico de dispersão e mapa de calor). O tema de cada banca não existe nos e-mails e foi derivado do título por um modelo de linguagem executado localmente, a partir das árvores de temas oficiais dos programas.
 
-1. No Gmail da USP, pesquisei `subject:"[grad-l]" "Qualificações"`.
-2. Marquei todos os resultados.
-3. Criei um rótulo novo chamado `grad-I` e apliquei nesses e-mails.
-4. Entrei em https://takeout.google.com e cliquei em "Desmarcar tudo".
-5. Marquei só "E-mail" e, em "Todos os dados do E-mail incluídos", deixei só o rótulo `grad-I`.
-6. "Próxima etapa" -> deixei as opções padrão (link por e-mail, exportar uma vez, .zip, 2 GB) -> "Criar exportação".
-7. Esperei o e-mail do Google avisando que ficou pronto e baixei o `.zip`.
+Trabalho da disciplina SCC0252 – Visualização Computacional (2026/2), ICMC-USP, Prof. Jean R. Ponciano.
 
-## 2. Gerar o CSV
+## Integrantes
 
-Tudo rodando de dentro da pasta do trabalho, com o ambiente conda:
+- Gabriel da Costa Merlin
+- Guilherme Antonio Costa Bandeira
+- João Pedro Mori Machado
+
+## Estrutura
 
 ```bash
-conda activate viscomp
-cd /Users/gabrielcmerlin/codes/viscomp/trab2
+icmc-defenses-viz/
+├── data/
+│   ├── raw/
+│   │   └── defesas.mbox              # E-mails da lista [grad-l] exportados pelo Google Takeout
+│   ├── scrape_emails.py              # Lê o .mbox e gera o eventos.csv
+│   └── eventos.csv                   # Dataset final, uma banca por linha
+├── viz/
+│   ├── trab_parte1.ipynb             # Notebook da entrega (visualizações interativas)
+│   ├── question1/                    # Notebook de desenvolvimento da Questão 1
+│   ├── question2/                    # Notebook de desenvolvimento da Questão 2
+│   └── question3/
+│       ├── classificar_temas.py      # Classifica o título de cada banca em um tema (opcional)
+│       ├── temas_existentes.json     # Árvores de temas oficiais dos programas
+│       ├── temas_llm_novo.csv        # Tema e macro-tema de cada banca
+│       └── plot.ipynb                # Notebook de desenvolvimento da Questão 3
+├── .gitignore
+├── README.md                         # Documentação do projeto (este arquivo)
+└── env.yaml                          # Definição do ambiente conda para reprodutibilidade
 ```
 
-Coloquei o zip em `data/raw/`:
+## Como começar
+
+### Instalando o Miniconda
+
+Se você já tem o conda instalado, pule esta etapa. Os comandos abaixo valem para Linux; para macOS e Windows, siga as instruções em [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/).
+
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+rm Miniconda3-latest-Linux-x86_64.sh
+echo 'export PATH="$HOME/miniconda3/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### Baixando o código
+
+```bash
+git clone https://github.com/gabrielcmerlin/icmc-defenses-viz.git
+cd icmc-defenses-viz
+```
+
+### Instalando as dependências
+
+```bash
+conda env create -f env.yaml
+conda activate viscomp
+```
+
+### Dados
+
+Não há nada para baixar. O dataset (`data/eventos.csv`) e os temas das bancas (`viz/question3/temas_llm_novo.csv`) já estão no repositório. Para gerar o dataset do zero a partir dos e-mails, veja [Gerando o dataset do zero](#gerando-o-dataset-do-zero).
+
+### (Opcional) Configurando o modelo de temas
+
+Esta etapa só é necessária se você quiser classificar os temas de novo. O resultado já vem pronto em `viz/question3/temas_llm_novo.csv`.
+
+1. Instale o [Ollama](https://ollama.com/).
+2. Baixe o modelo usado na classificação:
+```bash
+ollama pull gemma4:12b
+```
+3. Deixe o servidor rodando em outro terminal:
+```bash
+ollama serve
+```
+
+### Notas importantes
+
+**Nota 1**: o notebook é entregue **sem as figuras salvas**. As visualizações aparecem quando você o executa por inteiro (*Run All*), e os painéis interativos (filtros, seletores e campos de busca) só funcionam com um kernel ativo, no VS Code ou no JupyterLab. O visualizador de notebooks do GitHub mostra o código, mas não as figuras nem os painéis.
+
+**Nota 2**: o arquivo `data/raw/defesas.mbox` é a exportação bruta dos e-mails da lista `[grad-l]`, e está no repositório para que o `eventos.csv` possa ser reproduzido. As bancas são divulgadas pelo próprio ICMC para a comunidade, e os dados extraídos são os mesmos que aparecem nos avisos.
+
+**Nota 3**: o dataset é gerado por um script sobre e-mails de texto livre, e não representa com 100% de fidelidade o conteúdo dos e-mails. As particularidades conhecidas são:
+* 2022 (a partir de março) e 2026 (até outubro) são anos incompletos.
+* O PPG-Mat, o MECAI e o PROFMAT não têm nenhuma qualificação no conjunto, porque elas não são divulgadas na lista desses programas. O MECAI e o PROFMAT só têm bancas de mestrado.
+* Bancas canceladas sem aviso por e-mail não são detectadas.
+* Alguns títulos aparecem cortados ou com erros de digitação nos próprios e-mails, e foram mantidos como vieram. Uma banca está sem horário, porque o e-mail não informou.
+* O tema de cada banca é uma aproximação, atribuída por um modelo de linguagem a partir do título. Só o PPG-CCMC, o PPG-Mat e o PIPGES foram classificados.
+
+## Como executar
+
+### Abrindo o notebook
+
+O notebook usa caminhos relativos à pasta `viz/`, então abra-o a partir da própria pasta.
+
+* **VS Code:** abra `viz/trab_parte1.ipynb`, selecione o kernel `viscomp` e execute todas as células.
+* **JupyterLab:**
+```bash
+jupyter lab viz/trab_parte1.ipynb
+```
+
+### Gerando o dataset do zero
+
+Esta etapa é opcional e **sobrescreve** o `data/raw/defesas.mbox` e o `data/eventos.csv` atuais. Para reproduzi-la é preciso estar inscrito na lista `[grad-l]`.
+
+**1. Baixando os e-mails do Gmail**
+
+1. No Gmail da USP, pesquise `subject:"[grad-l]" "Qualificações"`.
+2. Marque todos os resultados.
+3. Crie um rótulo novo e aplique-o a esses e-mails. O nome é livre; o arquivo `.mbox` exportado leva o nome do rótulo.
+4. Entre em [takeout.google.com](https://takeout.google.com) e clique em "Desmarcar tudo".
+5. Marque só "E-mail" e, em "Todos os dados do E-mail incluídos", deixe só o rótulo criado.
+6. Clique em "Próxima etapa", mantenha as opções padrão (link por e-mail, exportar uma vez, `.zip`, 2 GB) e clique em "Criar exportação".
+7. Espere o e-mail do Google avisando que ficou pronto e baixe o `.zip`.
+
+**2. Gerando o CSV**
 
 ```bash
 mkdir -p data/raw
 mv ~/Downloads/takeout-*.zip data/raw/
-```
-
-Extraí o `.mbox` que está dentro do zip e renomeei para `grad-I.mbox`
-(dentro do zip ele aparece como `Takeout/E-mail/grad-I.mbox`, com "I" maiúsculo):
-
-```bash
 unzip -q -o data/raw/takeout-*.zip -d data/raw/takeout
-mv data/raw/takeout/Takeout/E-mail/*.mbox data/raw/grad-I.mbox
+mv data/raw/takeout/Takeout/E-mail/*.mbox data/raw/defesas.mbox
 rm -r data/raw/takeout
+python3 data/scrape_emails.py data/raw/defesas.mbox
 ```
 
-Rodei o script que lê o `.mbox` e monta o CSV:
+O script aceita um segundo argumento opcional com o caminho do CSV de saída. Com os e-mails até 23/10/2026, o terminal mostra:
+
+```
+1398 ocorrências lidas, 1150 eventos no CSV
+```
+
+O script:
+* lê só os e-mails cujo assunto contém "Defesas e Qualificações" e descarta os trechos citados de respostas anteriores;
+* separa cada e-mail em blocos, um por banca, e extrai tipo, nível, programa, título, aluno, orientador, data, hora e local com expressões regulares;
+* junta a mesma banca que aparece em vários e-mails (agenda semanal, "Atualizado", "Retificação") pelo aluno, tipo e nível, e mantém a versão do e-mail mais recente;
+* padroniza os nomes dos programas e as grafias dos orientadores;
+* deriva `dia_semana`, `remoto`, `icmc` e `atualizado`.
+
+O CSV é reescrito por inteiro a cada execução. Para atualizar com e-mails novos, faça uma nova exportação e rode o script de novo.
+
+### Reclassificando os temas (opcional)
+
+Com o Ollama rodando (veja [Configurando o modelo de temas](#opcional-configurando-o-modelo-de-temas)):
 
 ```bash
-python3 data/scrape_emails.py data/raw/grad-I.mbox
+# Mostra o prompt de uma banca, sem chamar o modelo
+python3 viz/question3/classificar_temas.py --dry-run
+
+# Classifica as bancas que ainda não têm tema
+python3 viz/question3/classificar_temas.py
 ```
 
-No terminal aparece:
-
-```
-647 ocorrências lidas, 523 eventos no CSV
-```
-
-O resultado fica em `data/eventos.csv`, com uma linha por defesa/qualificação.
-
-## O que o script faz
-
-- Lê as 120 mensagens do `.mbox` e pega só as que têm "Defesas e Qualificações" no assunto.
-- Separa cada e-mail em blocos (um por banca, divididos pelas linhas `-----`) e tira de cada um
-  tipo, nível, programa, título, aluno, orientador, data, hora e local.
-- A mesma banca aparece em vários e-mails (semanal, "Atualizado", "Retificada"...), então
-  juntei pelo aluno + tipo + nível e deixei sempre a versão do e-mail mais recente.
-  Por isso 647 ocorrências viram 523 eventos.
-- O CSV é reescrito inteiro a cada execução (não junta com o que já existia). Para atualizar
-  com e-mails novos, é só fazer um novo export e rodar o script de novo.
-- O nome do programa sai sempre com a sigla no fim (ex.: `... - PPG-CCMC`). As siglas
-  (PPG-CCMC, PIPGES, PPG-Mat, MECAI, PROFMAT) são as que aparecem nos próprios e-mails.
-
-### Problemas de parsing que apareceram (e como resolvi)
-
-Os dois e-mails de exemplo que eu usei no começo eram "bonitinhos". Nos e-mails de verdade
-apareceu bastante coisa diferente. Conferi o resultado contando os `Aluno(a):` de cada e-mail
-contra os eventos que o script extraiu, e fui corrigindo até bater:
-
-- **Negrito em texto puro:** alguns e-mails vêm como `*Qualificação* de *Mestrado*`. O script
-  não reconhecia o cabeçalho e jogava o e-mail inteiro fora (inclusive o de 19 a 23/10).
-  Agora os `*` são removidos.
-- **Linhas quebradas:** o e-mail quebra linhas longas no meio. Isso quebrava o nome do programa
-  (`...Matemática` / `Computacional`) e a palavra "Computacional" ia parar no começo do título.
-  Agora o script completa o nome do programa usando a lista dos programas que aparecem
-  nos e-mails. Nomes de alunos e locais quebrados em duas linhas também são juntados.
-- **Respostas e e-mails citados:** os e-mails "Re:" e "Atualizado" repetem a agenda antiga
-  embaixo, depois de "Em ... escreveu:". O script corta tudo a partir dessa linha (e ignora
-  linhas começando com `>`). Antes, um desses e-mails fez o campo `local` de um evento
-  ficar com mais de 5 mil caracteres.
-- **Título colado no `Aluno(a):`** (sem quebra de linha), **lixo antes do cabeçalho** na mesma linha
-  e **"Onde:" faltando ou digitado errado** em alguns e-mails: tratados caso a caso.
-- **"Atenciosamente," solto no meio da agenda:** um e-mail (06 a 10/10/2025) tem essa linha no meio
-  e eu estava cortando o e-mail ali, perdendo as bancas seguintes (e deixando uma data
-  desatualizada de uma remarcação). Achei porque conferi todos os nomes de `Aluno(a):` do texto cru
-  contra o CSV. Agora só a assinatura é cortada, dentro do bloco.
-- **Rodapé colado no `local`:** em alguns e-mails o último bloco vem seguido de `--` /
-  `Serviço de Pós-Graduação...` ou de `Mais informações...`, e isso entrava no campo `local`
-  (ex.: `3-004B -- Serviço de Pós-Graduação ICMC - USP +55-16-...`). Agora o bloco é cortado
-  nesses marcadores. Também tirei um `)` que sobrava em `Onde:) 3-002`.
-- **Nível corrigido num e-mail "Atualizado":** a qualificação de Vinicius Morgado Rosa Vianna saiu
-  como Doutorado e depois como Mestrado. Como o `id` usa o nível, ficavam dois eventos. Agora, se o
-  mesmo aluno tem o mesmo tipo com níveis diferentes em até 90 dias, vale o e-mail mais novo.
-- **Aviso em texto livre:** o e-mail `[ALTERAÇÃO]` de 17/09/2024 não tem bloco de agenda, só diz
-  que a qualificação de Bruno Ely Reis Garcia passou a ser virtual. O script procura essa frase e
-  marca o evento como remoto.
-- **Orientador escrito de jeitos diferentes:** `Ednaldo José`/`Ednaldo Jose`, `Érica`/`érica`,
-  `Gonçalves.` com ponto final, e `Cibele Maria Russo` x `Cibele Maria Russo Novelli`. O script
-  junta essas grafias (fica a que começa com maiúscula, com acento e mais frequente).
-- **Local em vários formatos:** a mesma sala aparecia como `3-002`, `ICMC, 3-002`, `Sala 3-002`...
-  Se o texto tem um código de sala (`d-ddd`, ex.: `3-002`, `3-004B`) e não é da UFSCar, conta como
-  ICMC (`icmc` = 1) e o `local` vira só o código. A `Sala da Congregação` também é do ICMC
-  (`icmc` = 1), mas não tem código e o `local` fica com esse nome. O resto (`icmc` = 0) fica como veio.
-- **`>From` do mbox:** o formato mbox escreve `>From` quando uma linha começa com "From".
-  Um título começando com "From reviews to features..." estava sendo confundido com citação.
-- **Nome do programa com sufixo:** alguns e-mails trazem ` - PIPGES` ou ` - PPG-Mat` no final,
-  ou um ponto no fim. Tirei isso, e no final ficam 5 programas.
-- Para ter certeza, li os 120 e-mails inteiros à mão (sem usar o script), montei minha própria
-  lista de eventos e comparei campo a campo com o CSV. Foi assim que apareceram os três
-  problemas acima (rodapé, nível e aviso em texto livre). Depois das correções, os 523 eventos
-  batem em tipo, nível, programa, aluno, orientador, data, hora, local e remoto.
-- Depois conferi 55 eventos sorteados, lado a lado com o texto original do e-mail, e todos bateram.
-- Conferi também que o dia da semana escrito no e-mail bate com a data calculada
-  (todos batem) e que não sobrou asterisco nem campo vazado em nenhuma coluna.
-
-## Sobre a contagem de e-mails
-
-O Gmail mostra 110 conversas e o `.mbox` tem 120 mensagens. É porque o Gmail agrupa
-e-mails da mesma conversa (os "Atualizado", "Retificada" e as respostas "Re:") numa coisa só,
-e o Takeout exporta cada mensagem separada.
-
-## Estrutura
-
-```
-trab2/
-├── README.md
-└── data/
-    ├── scrape_emails.py   # lê o mbox e gera o CSV
-    ├── eventos.csv        # dataset final (gerado)
-    └── raw/
-        ├── takeout-...zip # export do Gmail
-        └── grad-I.mbox    # extraído do zip (gerado)
-```
+O modelo recebe só o programa e o título de cada banca, nunca o orientador nem o aluno, e escolhe entre os temas do programa em `viz/question3/temas_existentes.json` ou "Outros". O resultado é gravado linha a linha em `viz/question3/temas_llm_novo.csv`, então rodar o script de novo continua de onde parou. Para refazer tudo, ou para trocar de modelo com `--modelo`, apague esse CSV antes.
 
 ## Colunas do `eventos.csv`
 
-| Coluna | O que é |
+| Coluna | Descrição |
 |---|---|
-| `id` | identificador do evento (hash de aluno + tipo + nível) |
+| `id` | Identificador da banca (hash de aluno + tipo + nível) |
 | `tipo` | Defesa ou Qualificação |
 | `nivel` | Mestrado ou Doutorado |
-| `programa` | programa de pós-graduação, com a sigla no fim |
-| `titulo`, `aluno` | dados da banca |
-| `orientador` | orientador, com a grafia padronizada (ver abaixo) |
-| `data` | AAAA-MM-DD |
-| `dia_semana` | 0 = segunda, 1 = terça, ..., 4 = sexta |
-| `hora` | HH:MM (vazio se o e-mail não informou) |
-| `local` | se `icmc` = 1, só o código da sala (ex.: `3-002`); se `icmc` = 0, o texto do e-mail como veio; vazio se a banca é remota |
-| `icmc` | 1 = sala do ICMC (inclui a Sala da Congregação), 0 = outro lugar (UFSCar, FFCLRP, sessão fechada), vazio = banca remota |
-| `remoto` | 1 se a banca é remota, 0 se presencial |
-| `atualizado` | 1 se a versão final do evento veio de um e-mail de correção (assunto com "Atualizado", "Atualização" ou "Retificação") |
+| `programa` | Programa de pós-graduação, com a sigla no final (cinco valores) |
+| `titulo` | Título do trabalho (texto livre) |
+| `aluno` | Nome do(a) aluno(a) |
+| `orientador` | Nome do(a) orientador(a), com a grafia unificada |
+| `data` | Data da banca (AAAA-MM-DD) |
+| `dia_semana` | 0 = segunda-feira, ..., 4 = sexta-feira |
+| `hora` | Horário da banca (HH:MM) |
+| `local` | Código da sala (ex.: `3-002`) se `icmc` = 1, texto do e-mail se `icmc` = 0, vazio nas bancas remotas |
+| `icmc` | 1 = sala do ICMC, 0 = outro lugar, vazio = sem local registrado |
+| `remoto` | 1 = remota, 0 = presencial |
+| `atualizado` | 1 se a versão final veio de um e-mail de correção (assunto com "Atualizado", "Atualização" ou "Retificação") |
 
-## Problemas que ficaram nos dados
+## Fontes e créditos
 
-Nenhum é erro do script: vêm dos próprios e-mails.
-
-- Não aparecem eventos de mar-abr/2025 (conferi no Gmail: a lista não mandou e-mails nesse período).
-- O export vai até o começo de out/2026 (foi quando pedi), mas já inclui a semana de 19 a 23/10.
-- Uma linha (Bruno Estanislau Holtz, 13/08/2026) está sem hora, porque o e-mail não informou.
-- Um evento (Ricardo Tetti Camacho, 03/09/2024) ficou de fora: nos dois e-mails em que ele
-  aparece falta a linha "Defesa/Qualificação de ...", então não dá para saber o tipo.
-- Alguns títulos vêm cortados no próprio e-mail (8 casos) e há erros de digitação neles
-  (ex.: `Abaout a theorem by Nomizu`, `ambien t`). Deixei como estão.
-- Uma defesa (Maria Lydia Fioravanti, 29/05/2026) é "sessão fechada": não é remota nem tem sala
-  (`remoto` = 0, `icmc` = 0, e o `local` guarda o texto do e-mail).
-- O script não sabe de bancas canceladas sem aviso por e-mail.
+* **Bancas:** avisos semanais da lista `[grad-l]`, enviados pelo Serviço de Pós-Graduação do ICMC-USP.
+* **Árvores de temas:** páginas dos programas [PPG-CCMC](https://www.icmc.usp.br/pos-graduacao/ppgccmc), [PPG-Mat](https://www.icmc.usp.br/pos-graduacao/ppgmat) e [PIPGES](https://www.icmc.usp.br/pos-graduacao/pipges).
+* **Paleta de cores:** Okabe, M.; Ito, K. (2008). *Color Universal Design (CUD): How to make figures and presentations that are friendly to colorblind people.*
+* **Classificação de temas:** modelo Gemma, executado localmente com o [Ollama](https://ollama.com/).
