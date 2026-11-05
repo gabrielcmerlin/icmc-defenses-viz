@@ -65,21 +65,9 @@ conda activate viscomp
 
 ### Dados
 
-Não há nada para baixar. O dataset (`data/eventos.csv`) e os temas das bancas (`viz/question3/temas_llm_novo.csv`) já estão no repositório. Para gerar o dataset do zero a partir dos e-mails, veja [Gerando o dataset do zero](#gerando-o-dataset-do-zero).
+Não há nada para baixar. O dataset (`data/eventos.csv`) e os temas das bancas (`viz/question3/temas_llm_novo.csv`) já estão no repositório, então não é preciso gerar nem classificar nada para rodar o notebook. Caso queira refazer alguma dessas etapas, veja [Gerando o dataset do zero](#gerando-o-dataset-do-zero) e [Reclassificando os temas](#reclassificando-os-temas-opcional).
 
-### (Opcional) Configurando o modelo de temas
 
-Esta etapa só é necessária se você quiser classificar os temas de novo. O resultado já vem pronto em `viz/question3/temas_llm_novo.csv`.
-
-1. Instale o [Ollama](https://ollama.com/).
-2. Baixe o modelo usado na classificação:
-```bash
-ollama pull gemma4:12b
-```
-3. Deixe o servidor rodando em outro terminal:
-```bash
-ollama serve
-```
 
 ### Notas importantes
 
@@ -148,7 +136,21 @@ O CSV é reescrito por inteiro a cada execução. Para atualizar com e-mails nov
 
 ### Reclassificando os temas (opcional)
 
-Com o Ollama rodando (veja [Configurando o modelo de temas](#opcional-configurando-o-modelo-de-temas)):
+Esta etapa só é necessária se você quiser classificar os temas de novo. O resultado já vem pronto em `viz/question3/temas_llm_novo.csv`.
+
+**1. Configurando o modelo**
+
+1. Instale o [Ollama](https://ollama.com/).
+2. Baixe o modelo usado na classificação:
+```bash
+ollama pull gemma4:12b
+```
+3. Deixe o servidor rodando em outro terminal:
+```bash
+ollama serve
+```
+
+**2. Rodando a classificação**
 
 ```bash
 # Mostra o prompt de uma banca, sem chamar o modelo
