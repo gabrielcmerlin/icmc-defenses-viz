@@ -94,7 +94,7 @@ O notebook usa caminhos relativos à pasta `viz/`, então abra-o a partir da pr�
 jupyter lab viz/trab_parte1.ipynb
 ```
 
-### Gerando o dataset do zero
+### Gerando o dataset do zero (opcional)
 
 Esta etapa é opcional e **sobrescreve** o `data/raw/defesas.mbox` e o `data/eventos.csv` atuais. Para reproduzi-la é preciso estar inscrito na lista `[grad-l]`.
 
