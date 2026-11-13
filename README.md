@@ -22,7 +22,7 @@ icmc-defenses-viz/
 │   ├── scrape_emails.py              # Lê o .mbox e gera o eventos.csv
 │   └── eventos.csv                   # Dataset final, uma banca por linha
 ├── viz/
-│   └── submission1/
+│   └── parte1/
 │       ├── trab_parte1.ipynb         # Notebook da entrega (visualizações interativas)
 │       ├── question1/                # Notebook de desenvolvimento da Questão 1
 │       ├── question2/                # Notebook de desenvolvimento da Questão 2
@@ -66,7 +66,7 @@ conda activate viscomp
 
 ### Dados
 
-Não há nada para baixar. O dataset (`data/eventos.csv`) e o arquivo auxiliar com os temas da Q3 (`viz/submission1/question3/temas_llm.csv`) já estão no repositório, então não é preciso gerar nem classificar nada para rodar o notebook. Caso queira refazer alguma dessas etapas, veja [Gerando o dataset do zero](#gerando-o-dataset-do-zero) e [Reclassificando os temas](#reclassificando-os-temas-opcional).
+Não há nada para baixar. O dataset (`data/eventos.csv`) e o arquivo auxiliar com os temas da Q3 (`viz/parte1/question3/temas_llm.csv`) já estão no repositório, então não é preciso gerar nem classificar nada para rodar o notebook. Caso queira refazer alguma dessas etapas, veja [Gerando o dataset do zero](#gerando-o-dataset-do-zero) e [Reclassificando os temas](#reclassificando-os-temas-opcional).
 
 
 
@@ -87,12 +87,12 @@ Não há nada para baixar. O dataset (`data/eventos.csv`) e o arquivo auxiliar c
 
 ### Abrindo o notebook
 
-O notebook usa caminhos relativos à pasta `viz/submission1/`, então abra-o a partir da própria pasta.
+O notebook usa caminhos relativos à pasta `viz/parte1/`, então abra-o a partir da própria pasta.
 
-* **VS Code:** abra `viz/submission1/trab_parte1.ipynb`, selecione o kernel `viscomp` e execute todas as células.
+* **VS Code:** abra `viz/parte1/trab_parte1.ipynb`, selecione o kernel `viscomp` e execute todas as células.
 * **JupyterLab:**
 ```bash
-jupyter lab viz/submission1/trab_parte1.ipynb
+jupyter lab viz/parte1/trab_parte1.ipynb
 ```
 
 ### Gerando o dataset do zero (opcional)
@@ -137,7 +137,7 @@ O CSV é reescrito por inteiro a cada execução. Para atualizar com e-mails nov
 
 ### Reclassificando os temas (opcional)
 
-Esta etapa só é necessária se você quiser classificar os temas de novo. O resultado já vem pronto em `viz/submission1/question3/temas_llm.csv`.
+Esta etapa só é necessária se você quiser classificar os temas de novo. O resultado já vem pronto em `viz/parte1/question3/temas_llm.csv`.
 
 **1. Configurando o modelo**
 
@@ -155,13 +155,13 @@ ollama serve
 
 ```bash
 # Mostra o prompt de uma banca, sem chamar o modelo
-python3 viz/submission1/question3/classificar_temas.py --dry-run
+python3 viz/parte1/question3/classificar_temas.py --dry-run
 
 # Classifica as bancas que ainda não têm tema
-python3 viz/submission1/question3/classificar_temas.py
+python3 viz/parte1/question3/classificar_temas.py
 ```
 
-O modelo recebe só o programa e o título de cada banca, nunca o orientador nem o aluno, e escolhe entre os temas do programa em `viz/submission1/question3/temas_existentes.json` ou "Outros". O resultado é gravado linha a linha em `viz/submission1/question3/temas_llm.csv`, então rodar o script de novo continua de onde parou. Para refazer tudo, ou para trocar de modelo com `--modelo`, apague esse CSV antes.
+O modelo recebe só o programa e o título de cada banca, nunca o orientador nem o aluno, e escolhe entre os temas do programa em `viz/parte1/question3/temas_existentes.json` ou "Outros". O resultado é gravado linha a linha em `viz/parte1/question3/temas_llm.csv`, então rodar o script de novo continua de onde parou. Para refazer tudo, ou para trocar de modelo com `--modelo`, apague esse CSV antes.
 
 ## Colunas do `eventos.csv`
 
@@ -184,7 +184,7 @@ O modelo recebe só o programa e o título de cada banca, nunca o orientador nem
 
 ## Colunas do `temas_llm.csv`
 
-Arquivo auxiliar da Q3, em `viz/submission1/question3/`, que não faz parte do dataset. É gerado por `classificar_temas.py` a partir do título e tem uma linha por banca dos três programas com árvore de temas (PPG-CCMC, PPG-Mat e PIPGES, 1046 bancas) e se liga ao `eventos.csv` pelo `id`.
+Arquivo auxiliar da Q3, em `viz/parte1/question3/`, que não faz parte do dataset. É gerado por `classificar_temas.py` a partir do título e tem uma linha por banca dos três programas com árvore de temas (PPG-CCMC, PPG-Mat e PIPGES, 1046 bancas) e se liga ao `eventos.csv` pelo `id`.
 
 | Coluna | Descrição |
 |---|---|
