@@ -18,7 +18,7 @@ from pathlib import Path
 import requests
 
 AQUI = Path(__file__).parent
-RAIZ = AQUI.parent.parent
+RAIZ = AQUI.parent.parent.parent
 EVENTOS = RAIZ / "data" / "eventos.csv"
 TEMAS = AQUI / "temas_existentes.json"
 SAIDA = AQUI / "temas_llm.csv"
