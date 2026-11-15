@@ -65,7 +65,7 @@ conda activate viscomp
 
 ### Dados
 
-Não há nada para baixar. O dataset (`data/eventos.csv`) e o arquivo auxiliar com os temas da Q3 (`viz/question3/temas_llm.csv`) já estão no repositório, então não é preciso gerar nem classificar nada para rodar o notebook. Caso queira refazer alguma dessas etapas, veja [Gerando o dataset do zero](#gerando-o-dataset-do-zero) e [Reclassificando os temas](#reclassificando-os-temas-opcional).
+Não há nada para baixar. O dataset (`data/eventos.csv`) e o arquivo auxiliar com os temas da Q3 (`viz/question3/temas_llm.csv`) já estão no repositório, então não é preciso gerar nem classificar nada para rodar o notebook. Caso queira refazer alguma dessas etapas, veja [Gerando o dataset do zero](#gerando-o-dataset-do-zero-opcional) e [Reclassificando os temas](#reclassificando-os-temas-opcional).
 
 
 
