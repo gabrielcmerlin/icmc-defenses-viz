@@ -22,15 +22,17 @@ icmc-defenses-viz/
 │   ├── scrape_emails.py              # Lê o .mbox e gera o eventos.csv
 │   └── eventos.csv                   # Dataset final, uma banca por linha
 ├── viz/
-│   └── parte1/
-│       ├── trab_parte1.ipynb         # Notebook da entrega (visualizações interativas)
-│       ├── question1/                # Notebook de desenvolvimento da Questão 1
-│       ├── question2/                # Notebook de desenvolvimento da Questão 2
-│       └── question3/
-│           ├── classificar_temas.py  # Classifica o título de cada banca em um tema (opcional)
-│           ├── temas_existentes.json # Árvores de temas oficiais dos programas
-│           ├── temas_llm.csv         # Arquivo auxiliar da Q3: tema e macro-tema de cada banca
-│           └── plot.ipynb            # Notebook de desenvolvimento da Questão 3
+│   ├── parte1/                       # Primeira entrega
+│   │   ├── trab_parte1.ipynb         # Notebook da entrega (visualizações interativas)
+│   │   ├── question1/                # Notebook de desenvolvimento da Questão 1
+│   │   ├── question2/                # Notebook de desenvolvimento da Questão 2
+│   │   └── question3/
+│   │       ├── classificar_temas.py  # Classifica o título de cada banca em um tema (opcional)
+│   │       ├── temas_existentes.json # Árvores de temas oficiais dos programas
+│   │       ├── temas_llm.csv         # Arquivo auxiliar da Q3: tema e macro-tema de cada banca
+│   │       └── plot.ipynb            # Notebook de desenvolvimento da Questão 3
+│   └── parte2/                       # Segunda entrega (em andamento)
+│       └── linking1.ipynb            # Dispersão ligada ao mapa de calor da Q3 (brushing + linking)
 ├── .gitignore
 ├── README.md                         # Documentação do projeto (este arquivo)
 └── env.yaml                          # Definição do ambiente conda para reprodutibilidade
@@ -66,13 +68,13 @@ conda activate viscomp
 
 ### Dados
 
-Não há nada para baixar. O dataset (`data/eventos.csv`) e o arquivo auxiliar com os temas da Q3 (`viz/parte1/question3/temas_llm.csv`) já estão no repositório, então não é preciso gerar nem classificar nada para rodar o notebook. Caso queira refazer alguma dessas etapas, veja [Gerando o dataset do zero](#gerando-o-dataset-do-zero) e [Reclassificando os temas](#reclassificando-os-temas-opcional).
+Não há nada para baixar. O dataset (`data/eventos.csv`) e o arquivo auxiliar com os temas da Q3 (`viz/parte1/question3/temas_llm.csv`) já estão no repositório, então não é preciso gerar nem classificar nada para rodar os notebooks. O `viz/parte2/linking1.ipynb` também lê esse arquivo de temas, que fica em `viz/parte1/question3/`, então as duas pastas precisam estar no lugar. Caso queira refazer alguma dessas etapas, veja [Gerando o dataset do zero](#gerando-o-dataset-do-zero-opcional) e [Reclassificando os temas](#reclassificando-os-temas-opcional).
 
 
 
 ### Notas importantes
 
-**Nota 1**: o notebook é entregue **sem as figuras salvas**. As visualizações aparecem quando você o executa por inteiro (*Run All*), e os painéis interativos (filtros, seletores e campos de busca) só funcionam com um kernel ativo, no VS Code ou no JupyterLab. O visualizador de notebooks do GitHub mostra o código, mas não as figuras nem os painéis.
+**Nota 1**: os notebooks são entregues **sem as figuras salvas**. As visualizações aparecem quando você executa cada um por inteiro (*Run All*), e os painéis interativos (filtros, seletores e campos de busca) só funcionam com um kernel ativo, no VS Code ou no JupyterLab. O visualizador de notebooks do GitHub mostra o código, mas não as figuras nem os painéis.
 
 **Nota 2**: o arquivo `data/raw/defesas.mbox` é a exportação bruta dos e-mails da lista `[grad-l]`, e está no repositório para que o `eventos.csv` possa ser reproduzido. As bancas são divulgadas pelo próprio ICMC para a comunidade, e os dados extraídos são os mesmos que aparecem nos avisos.
 
@@ -85,11 +87,13 @@ Não há nada para baixar. O dataset (`data/eventos.csv`) e o arquivo auxiliar c
 
 ## Como executar
 
-### Abrindo o notebook
+### Abrindo os notebooks
 
-O notebook usa caminhos relativos à pasta `viz/parte1/`, então abra-o a partir da própria pasta.
+Os notebooks usam caminhos relativos à própria pasta (`viz/parte1/` e `viz/parte2/`), então abra cada um a partir dela.
 
-* **VS Code:** abra `viz/parte1/trab_parte1.ipynb`, selecione o kernel `viscomp` e execute todas as células.
+* **Primeira entrega:** `viz/parte1/trab_parte1.ipynb`.
+* **Segunda entrega (em andamento):** `viz/parte2/linking1.ipynb`, que liga a dispersão ao mapa de calor da Q3. Arraste uma caixa sobre os pontos para dar zoom e filtrar o mapa, e dê um duplo clique no gráfico para voltar à vista completa. Ele usa o `anywidget`, já incluído no `env.yaml`.
+* **VS Code:** abra o notebook, selecione o kernel `viscomp` e execute todas as células.
 * **JupyterLab:**
 ```bash
 jupyter lab viz/parte1/trab_parte1.ipynb
